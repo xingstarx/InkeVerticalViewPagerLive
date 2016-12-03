@@ -23,11 +23,13 @@ public class MainActivity extends AppCompatActivity {
     private Toast mToast = null;
     private String mVideoPath = null;
     private int mRotation = 0;
-    private int mDisplayAspectRatio = PLVideoTextureView.ASPECT_RATIO_FIT_PARENT; //default
+    private int mDisplayAspectRatio = PLVideoTextureView.ASPECT_RATIO_PAVED_PARENT;
     private View mLoadingView;
     private View mCoverView = null;
+    private static final String DEFAULT_TEST_URL = "http://live.hkstv.hk.lxdns.com/live/hks/playlist.m3u8";
+    //        private static final String DEFAULT_TEST_URL = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
+//    private static final String DEFAULT_TEST_URL = "http://mobile.xinhuashixun.com/Live/cncHD.m3u8";
     private boolean mIsActivityPaused = true;
-    private static final String DEFAULT_TEST_URL = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,21 +41,9 @@ public class MainActivity extends AppCompatActivity {
         mLoadingView.setVisibility(View.VISIBLE);
         mCoverView = findViewById(R.id.CoverView);
         mVideoView.setCoverView(mCoverView);
-
-        mVideoPath = getIntent().getStringExtra("videoPath");
-
-        // If you want to fix display orientation such as landscape, you can use the code show as follow
-        //
-        // if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        //     mVideoView.setPreviewOrientation(0);
-        // }
-        // else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-        //     mVideoView.setPreviewOrientation(270);
-        // }
-
+        mVideoView.setDisplayAspectRatio(mDisplayAspectRatio);
         mVideoPath = getIntent().getStringExtra("videoPath");
         mVideoPath = DEFAULT_TEST_URL;
-
         AVOptions options = new AVOptions();
 
         int isLiveStreaming = getIntent().getIntExtra("liveStreaming", 1);
@@ -108,35 +98,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mVideoView.stopPlayback();
-    }
-
-    public void onClickRotate(View v) {
-        mRotation = (mRotation + 90) % 360;
-        mVideoView.setDisplayOrientation(mRotation);
-    }
-
-    public void onClickSwitchScreen(View v) {
-        mDisplayAspectRatio = (mDisplayAspectRatio + 1) % 5;
-        mVideoView.setDisplayAspectRatio(mDisplayAspectRatio);
-        switch (mVideoView.getDisplayAspectRatio()) {
-            case PLVideoTextureView.ASPECT_RATIO_ORIGIN:
-                showToastTips("Origin mode");
-                break;
-            case PLVideoTextureView.ASPECT_RATIO_FIT_PARENT:
-                showToastTips("Fit parent !");
-                break;
-            case PLVideoTextureView.ASPECT_RATIO_PAVED_PARENT:
-                showToastTips("Paved parent !");
-                break;
-            case PLVideoTextureView.ASPECT_RATIO_16_9:
-                showToastTips("16 : 9 !");
-                break;
-            case PLVideoTextureView.ASPECT_RATIO_4_3:
-                showToastTips("4 : 3 !");
-                break;
-            default:
-                break;
-        }
     }
 
     private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {

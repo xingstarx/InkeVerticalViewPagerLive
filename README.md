@@ -109,11 +109,19 @@ mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
 ```
 
 在PageTransformer里面，我们需要判断，每时每刻都只有一个真实业务的view，具体的判断条件可以参考这个demo，也可以自己做实验印证，主要的思路还是当滑动停止下来后，transformPage()方法中，当前选中的view的position==0，这个时候我们是需要加载直播视频和聊天室的，
-而view不是我们选中的view的时候，也就是`position < 0 && viewGroup.getId() == mCurrentItem` 移除之前的真实业务布局。具体可以看上面的代码
+而view不是我们选中的view的时候，也就是`position < 0 && viewGroup.getId() != mCurrentItem` 需要移除之前的真实业务布局。具体可以看上面的代码
 
 
 大致原理就是如此了，请运行demo吧，有疑问，请提issue。
 
+##总结
+整体而言就是ViewPager加载的三个view中，有且只有一个view是拥有视频播放的textureview的，以及聊天室的fragment的，另外两个view都只是显示背景，没有其他的作用，在整个activity的生命过程中，始终只有这一个textutreview以及一个聊天室的fragment的，永远是复用的。这种情况下，就需要自己来控制不出现错位，混乱的问题，对映客的这种方式表示吊吊的 ^_^
+
+
 ##Thanks
+
+视频播放使用的是https://github.com/pili-engineering/PLDroidPlayer，感觉用起来还是不错的
+上下滑动选用的是https://github.com/castorflex/VerticalViewPager,没有选择另外一个的原因是滑动的产生的波纹效果还是左右方向的，当滑动到顶部或者是底部的时候
+
 
 

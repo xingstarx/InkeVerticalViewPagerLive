@@ -1,8 +1,12 @@
 # InkeVerticalViewPagerLive
 仿映客viewPager上下滑动切换直播demo
 
+##效果预览
+![Screenshot](art/inke.gif)
+
 ##简述
 经过几天对映客APP的分析研究，明白了映客上下滑动切换新的直播的实现原理，真心觉得做的挺赞的。。还是很流畅的，性能也很不错。
+
 ##思路
 
 首先是一个主Activity，里面只有一个ViewPager，当然了这个viewPager得是VerticalViewPager的。可以参考这两个项目，https://github.com/kaelaela/VerticalViewPager，
@@ -116,10 +120,6 @@ mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
 
 ##总结
 整体而言就是ViewPager加载的三个view中，有且只有一个view是拥有视频播放的textureview的，以及聊天室的fragment的，另外两个view都只是显示背景，没有其他的作用，在整个activity的生命过程中，始终只有这一个textutreview以及一个聊天室的fragment的，永远是复用的。这种情况下，就需要自己来控制不出现错位，混乱的问题，对映客的这种方式表示吊吊的 ^_^
-
-##效果预览
-![Screenshot](art/inke.gif)
-
 
 ##Thanks
 

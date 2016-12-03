@@ -117,6 +117,9 @@ mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
 ##总结
 整体而言就是ViewPager加载的三个view中，有且只有一个view是拥有视频播放的textureview的，以及聊天室的fragment的，另外两个view都只是显示背景，没有其他的作用，在整个activity的生命过程中，始终只有这一个textutreview以及一个聊天室的fragment的，永远是复用的。这种情况下，就需要自己来控制不出现错位，混乱的问题，对映客的这种方式表示吊吊的 ^_^
 
+##效果预览
+![Screenshot](art/inke.gif)
+
 
 ##Thanks
 

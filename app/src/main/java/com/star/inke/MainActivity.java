@@ -32,15 +32,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
     private static final int MESSAGE_ID_RECONNECTING = 0x01;
     private static final String DEFAULT_TEST_URL = "http://live.hkstv.hk.lxdns.com/live/hks/playlist.m3u8";
+    //  private static final String DEFAULT_TEST_URL = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
+//  private static final String DEFAULT_TEST_URL = "http://mobile.xinhuashixun.com/Live/cncHD.m3u8";
+    private boolean mIsActivityPaused = true;
     private MediaController mMediaController;
     private PLVideoTextureView mVideoView;
     private Toast mToast = null;
     private String mVideoPath = null;
-    private int mRotation = 0;
     private int mDisplayAspectRatio = PLVideoTextureView.ASPECT_RATIO_PAVED_PARENT;
-//  private static final String DEFAULT_TEST_URL = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
-//  private static final String DEFAULT_TEST_URL = "http://mobile.xinhuashixun.com/Live/cncHD.m3u8";
-    private boolean mIsActivityPaused = true;
     protected Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -168,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 ViewGroup viewGroup = (ViewGroup) page;
                 Log.e(TAG, "page.id == " + page.getId() + ", position == " + position);
 
-                if ((position < 0 && viewGroup.getId() == mCurrentItem) || (position >= 1 && viewGroup.getId() == mCurrentItem)) {
+                if ((position < 0 && viewGroup.getId() == mCurrentItem)) {
                     if (mRoomContainer.getParent() != null && mRoomContainer.getParent() instanceof ViewGroup) {
                         ((ViewGroup) (mRoomContainer.getParent())).removeView(mRoomContainer);
                     }

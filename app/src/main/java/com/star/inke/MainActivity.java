@@ -167,9 +167,10 @@ public class MainActivity extends AppCompatActivity {
                 ViewGroup viewGroup = (ViewGroup) page;
                 Log.e(TAG, "page.id == " + page.getId() + ", position == " + position);
 
-                if ((position < 0 && viewGroup.getId() == mCurrentItem)) {
-                    if (mRoomContainer.getParent() != null && mRoomContainer.getParent() instanceof ViewGroup) {
-                        ((ViewGroup) (mRoomContainer.getParent())).removeView(mRoomContainer);
+                if ((position < 0 && viewGroup.getId() != mCurrentItem)) {
+                    View roomContainer = viewGroup.findViewById(R.id.room_container);
+                    if (roomContainer != null && roomContainer.getParent() != null && roomContainer.getParent() instanceof ViewGroup) {
+                        ((ViewGroup) (roomContainer.getParent())).removeView(roomContainer);
                     }
                 }
                 // 满足此种条件，表明需要加载直播视频，以及聊天室了

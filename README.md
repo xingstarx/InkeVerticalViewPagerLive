@@ -85,15 +85,16 @@ mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             }
         });
 
-        mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
+mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
             @Override
             public void transformPage(View page, float position) {
                 ViewGroup viewGroup = (ViewGroup) page;
                 Log.e(TAG, "page.id == " + page.getId() + ", position == " + position);
 
-                if ((position < 0 && viewGroup.getId() == mCurrentItem)) {
-                    if (mRoomContainer.getParent() != null && mRoomContainer.getParent() instanceof ViewGroup) {
-                        ((ViewGroup) (mRoomContainer.getParent())).removeView(mRoomContainer);
+                if ((position < 0 && viewGroup.getId() != mCurrentItem)) {
+                    View roomContainer = viewGroup.findViewById(R.id.room_container);
+                    if (roomContainer != null && roomContainer.getParent() != null && roomContainer.getParent() instanceof ViewGroup) {
+                        ((ViewGroup) (roomContainer.getParent())).removeView(roomContainer);
                     }
                 }
                 // 满足此种条件，表明需要加载直播视频，以及聊天室了
@@ -104,7 +105,7 @@ mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
                     loadVideoAndChatRoom(viewGroup, mCurrentItem);
                 }
             }
-        });
+         });
 ```
 
 在PageTransformer里面，我们需要判断，每时每刻都只有一个真实业务的view，具体的判断条件可以参考这个demo，也可以自己做实验印证，主要的思路还是当滑动停止下来后，transformPage()方法中，当前选中的view的position==0，这个时候我们是需要加载直播视频和聊天室的，

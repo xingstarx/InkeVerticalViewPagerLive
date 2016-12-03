@@ -123,8 +123,9 @@ mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
 
 ##Thanks
 
-视频播放使用的是https://github.com/pili-engineering/PLDroidPlayer，感觉用起来还是不错的
-上下滑动选用的是https://github.com/castorflex/VerticalViewPager,没有选择另外一个的原因是滑动的产生的波纹效果还是左右方向的，当滑动到顶部或者是底部的时候
+视频播放使用的是https://github.com/pili-engineering/PLDroidPlayer ，感觉用起来还是不错的
+
+上下滑动选用的是https://github.com/castorflex/VerticalViewPager ,没有选择另外一个的原因是滑动的产生的波纹效果还是左右方向的，当滑动到顶部或者是底部的时候
 
 
 

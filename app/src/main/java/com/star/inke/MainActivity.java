@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,30 +24,42 @@ import com.star.inke.widget.MediaController;
 import java.util.ArrayList;
 
 import fr.castorflex.android.verticalviewpager.VerticalViewPager;
-import rx.Observable;
 import rx.Subscription;
-import rx.android.app.AppObservable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int MESSAGE_ID_RECONNECTING = 0x01;
     public static final String TAG = "MainActivity";
-
+    private static final int MESSAGE_ID_RECONNECTING = 0x01;
+    private static final String DEFAULT_TEST_URL = "http://live.hkstv.hk.lxdns.com/live/hks/playlist.m3u8";
     private MediaController mMediaController;
     private PLVideoTextureView mVideoView;
     private Toast mToast = null;
     private String mVideoPath = null;
     private int mRotation = 0;
     private int mDisplayAspectRatio = PLVideoTextureView.ASPECT_RATIO_PAVED_PARENT;
-    private static final String DEFAULT_TEST_URL = "http://live.hkstv.hk.lxdns.com/live/hks/playlist.m3u8";
-    //        private static final String DEFAULT_TEST_URL = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
-//    private static final String DEFAULT_TEST_URL = "http://mobile.xinhuashixun.com/Live/cncHD.m3u8";
+//  private static final String DEFAULT_TEST_URL = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
+//  private static final String DEFAULT_TEST_URL = "http://mobile.xinhuashixun.com/Live/cncHD.m3u8";
     private boolean mIsActivityPaused = true;
+    protected Handler mHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what != MESSAGE_ID_RECONNECTING) {
+                return;
+            }
+            if (mIsActivityPaused || !Utils.isLiveStreamingAvailable()) {
+                finish();
+                return;
+            }
+            if (!Utils.isNetworkAvailable(MainActivity.this)) {
+                sendReconnectMessage();
+                return;
+            }
+            mVideoView.setVideoPath(mVideoPath);
+            mVideoView.start();
+        }
+    };
     private VerticalViewPager mViewPager;
-
     private RelativeLayout mRoomContainer;
     private PagerAdapter mPagerAdapter;
     private int mCurrentItem;
@@ -60,12 +71,76 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager mFragmentManager;
     private int mRoomId = -1;
     private RoomFragment mRoomFragment = RoomFragment.newInstance();
-
+    private boolean mInit = false;
+    private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {
+        @Override
+        public boolean onError(PLMediaPlayer mp, int errorCode) {
+            boolean isNeedReconnect = false;
+            switch (errorCode) {
+                case PLMediaPlayer.ERROR_CODE_INVALID_URI:
+                    showToastTips("Invalid URL !");
+                    break;
+                case PLMediaPlayer.ERROR_CODE_404_NOT_FOUND:
+                    showToastTips("404 resource not found !");
+                    break;
+                case PLMediaPlayer.ERROR_CODE_CONNECTION_REFUSED:
+                    showToastTips("Connection refused !");
+                    break;
+                case PLMediaPlayer.ERROR_CODE_CONNECTION_TIMEOUT:
+                    showToastTips("Connection timeout !");
+                    isNeedReconnect = true;
+                    break;
+                case PLMediaPlayer.ERROR_CODE_EMPTY_PLAYLIST:
+                    showToastTips("Empty playlist !");
+                    break;
+                case PLMediaPlayer.ERROR_CODE_STREAM_DISCONNECTED:
+                    showToastTips("Stream disconnected !");
+                    isNeedReconnect = true;
+                    break;
+                case PLMediaPlayer.ERROR_CODE_IO_ERROR:
+                    showToastTips("Network IO Error !");
+                    isNeedReconnect = true;
+                    break;
+                case PLMediaPlayer.ERROR_CODE_UNAUTHORIZED:
+                    showToastTips("Unauthorized Error !");
+                    break;
+                case PLMediaPlayer.ERROR_CODE_PREPARE_TIMEOUT:
+                    showToastTips("Prepare timeout !");
+                    isNeedReconnect = true;
+                    break;
+                case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
+                    showToastTips("Read frame timeout !");
+                    isNeedReconnect = true;
+                    break;
+                case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
+                    break;
+                default:
+                    showToastTips("unknown error !");
+                    break;
+            }
+            // Todo pls handle the error status here, reconnect or call finish()
+            if (isNeedReconnect) {
+                sendReconnectMessage();
+            } else {
+                finish();
+            }
+            // Return true means the error has been handled
+            // If return false, then `onCompletion` will be called
+            return true;
+        }
+    };
+    private PLMediaPlayer.OnCompletionListener mOnCompletionListener = new PLMediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(PLMediaPlayer plMediaPlayer) {
+            showToastTips("Play Completed !");
+            finish();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_2);
+        setContentView(R.layout.activity_room);
         mViewPager = (VerticalViewPager) findViewById(R.id.view_pager);
         mRoomContainer = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.view_room_container, null);
         mFragmentContainer = (FrameLayout) mRoomContainer.findViewById(R.id.fragment_container);
@@ -131,13 +206,13 @@ public class MainActivity extends AppCompatActivity {
         options.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
     }
 
-    private boolean mInit = false;
     /**
      * @param viewGroup
      * @param currentItem
      */
     private void loadVideoAndChatRoom(ViewGroup viewGroup, int currentItem) {
 //        mSubscription = AppObservable.bindActivity(this, ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).
+        //聊天室的fragment只加载一次，以后复用
         if (!mInit) {
             mFragmentManager.beginTransaction().add(mFragmentContainer.getId(), mRoomFragment).commitAllowingStateLoss();
             mInit = true;
@@ -177,72 +252,6 @@ public class MainActivity extends AppCompatActivity {
         mSubscription.unsubscribe();
     }
 
-    private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {
-        @Override
-        public boolean onError(PLMediaPlayer mp, int errorCode) {
-            boolean isNeedReconnect = false;
-            switch (errorCode) {
-                case PLMediaPlayer.ERROR_CODE_INVALID_URI:
-                    showToastTips("Invalid URL !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_404_NOT_FOUND:
-                    showToastTips("404 resource not found !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_CONNECTION_REFUSED:
-                    showToastTips("Connection refused !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_CONNECTION_TIMEOUT:
-                    showToastTips("Connection timeout !");
-                    isNeedReconnect = true;
-                    break;
-                case PLMediaPlayer.ERROR_CODE_EMPTY_PLAYLIST:
-                    showToastTips("Empty playlist !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_STREAM_DISCONNECTED:
-                    showToastTips("Stream disconnected !");
-                    isNeedReconnect = true;
-                    break;
-                case PLMediaPlayer.ERROR_CODE_IO_ERROR:
-                    showToastTips("Network IO Error !");
-                    isNeedReconnect = true;
-                    break;
-                case PLMediaPlayer.ERROR_CODE_UNAUTHORIZED:
-                    showToastTips("Unauthorized Error !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_PREPARE_TIMEOUT:
-                    showToastTips("Prepare timeout !");
-                    isNeedReconnect = true;
-                    break;
-                case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
-                    showToastTips("Read frame timeout !");
-                    isNeedReconnect = true;
-                    break;
-                case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
-                    break;
-                default:
-                    showToastTips("unknown error !");
-                    break;
-            }
-            // Todo pls handle the error status here, reconnect or call finish()
-            if (isNeedReconnect) {
-                sendReconnectMessage();
-            } else {
-                finish();
-            }
-            // Return true means the error has been handled
-            // If return false, then `onCompletion` will be called
-            return true;
-        }
-    };
-
-    private PLMediaPlayer.OnCompletionListener mOnCompletionListener = new PLMediaPlayer.OnCompletionListener() {
-        @Override
-        public void onCompletion(PLMediaPlayer plMediaPlayer) {
-            showToastTips("Play Completed !");
-            finish();
-        }
-    };
-
     private void showToastTips(final String tips) {
         runOnUiThread(new Runnable() {
             @Override
@@ -261,26 +270,6 @@ public class MainActivity extends AppCompatActivity {
         mHandler.removeCallbacksAndMessages(null);
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_ID_RECONNECTING), 500);
     }
-
-    protected Handler mHandler = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what != MESSAGE_ID_RECONNECTING) {
-                return;
-            }
-            if (mIsActivityPaused || !Utils.isLiveStreamingAvailable()) {
-                finish();
-                return;
-            }
-            if (!Utils.isNetworkAvailable(MainActivity.this)) {
-                sendReconnectMessage();
-                return;
-            }
-            mVideoView.setVideoPath(mVideoPath);
-            mVideoView.start();
-        }
-    };
-
 
     class PagerAdapter extends android.support.v4.view.PagerAdapter {
 

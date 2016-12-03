@@ -28,4 +28,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.qiniu:happy-dns:0.2.+'
     compile 'com.qiniu.pili:pili-android-qos:0.8.+'
+    compile 'com.github.castorflex.verticalviewpager:library:19.0.1'
+    compile 'io.reactivex:rxandroid:0.25.0'
 }

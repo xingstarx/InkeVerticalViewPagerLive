@@ -12,4 +12,57 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="watermark_style" parent="@style/fill_wrap">
+        <item name="android:textSize">12.0sp</item>
+        <item name="android:textColor">@color/inke_color_86</item>
+        <item name="android:gravity">center</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_marginTop">4.0dip</item>
+        <item name="android:layout_marginRight">6.0dip</item>
+        <item name="android:layout_alignParentRight">true</item>
+    </style>
+
+    <style name="inke_img_40_40">
+        <item name="android:layout_width">@dimen/dimens_dip_40</item>
+        <item name="android:layout_height">@dimen/dimens_dip_40</item>
+        <item name="android:scaleType">fitXY</item>
+    </style>
+
+    <style name="room_public_chat_container">
+        <item name="android:gravity">bottom</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:paddingLeft">@dimen/dimens_dip_10</item>
+        <item name="android:paddingRight">@dimen/dimens_dip_10</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">@dimen/dimens_dip_110</item>
+        <item name="android:layout_alignWithParentIfMissing">true</item>
+    </style>
+
+    <style name="room_public_chat_listview">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:listSelector">@drawable/transparent_selector</item>
+        <item name="android:divider">@color/inke_color_29</item>
+    </style>
+
+    <style name="room_oper_container">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingLeft">@dimen/dimens_dip_10</item>
+        <item name="android:paddingRight">@dimen/dimens_dip_10</item>
+        <item name="android:paddingBottom">@dimen/dimens_dip_10</item>
+        <item name="android:layout_alignParentBottom">true</item>
+    </style>
+
+    <style name="room_users_container" parent="@style/fill_wrap">
+        <item name="android:paddingLeft">6.0dip</item>
+        <item name="android:paddingTop">@dimen/dimens_dip_10</item>
+        <item name="android:paddingRight">6.0dip</item>
+    </style>
+
+    <style name="fill_wrap">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 </resources>

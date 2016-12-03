@@ -3,4 +3,15 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="inke_color_86">#99ffffff</color>
+    <color name="inke_color_29">#00000000</color>
+    <color name="payeco_bgColor">#ffe8e8e8</color>
+    <color name="payeco_hintTextColor">#ffc4c4c4</color>
+    <color name="payeco_textColorBlack">#ff2b2b2b</color>
+    <color name="payeco_textColorBlue">#ff6ca6cd</color>
+    <color name="payeco_textColorGrayTwo">#ffa2a2a2</color>
+    <color name="payeco_textColorWhite">#ffffffff</color>
+    <color name="payeco_textColorYellow">#ffff8c00</color>
+    <color name="payeco_tipsTextColor">#ff4a5761</color>
+
 </resources>

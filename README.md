@@ -9,8 +9,8 @@
 
 ##思路
 
-首先是一个主Activity，里面只有一个ViewPager，当然了这个viewPager得是VerticalViewPager的。可以参考这两个项目，https://github.com/kaelaela/VerticalViewPager，
-https://github.com/castorflex/VerticalViewPager， 请记住ViewPager使用的adapter得是PagerAdapter，而不能是FragmentPagerAdapter
+首先是一个主Activity，里面只有一个ViewPager，当然了这个viewPager得是VerticalViewPager的。可以参考这两个项目，https://github.com/kaelaela/VerticalViewPager ,
+https://github.com/castorflex/VerticalViewPager  ， 请记住ViewPager使用的adapter得是PagerAdapter，而不能是FragmentPagerAdapter
 
 ```java
 class PagerAdapter extends android.support.v4.view.PagerAdapter {

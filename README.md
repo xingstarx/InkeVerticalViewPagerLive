@@ -4,6 +4,9 @@
 ##效果预览
 ![Screenshot](art/inke.gif)
 
+##APK地址
+[InkeVerticalViewPagerLive-sample.apk](apk/InkeVerticalViewPagerLive-sample.apk)
+
 ##简述
 经过几天对映客APP的分析研究，明白了映客上下滑动切换新的直播的实现原理，真心觉得做的挺赞的。。还是很流畅的，性能也很不错。
 

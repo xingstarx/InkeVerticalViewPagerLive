@@ -31,9 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
     private static final int MESSAGE_ID_RECONNECTING = 0x01;
-    private static final String DEFAULT_TEST_URL = "http://live.hkstv.hk.lxdns.com/live/hks/playlist.m3u8";
-    //  private static final String DEFAULT_TEST_URL = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
-//  private static final String DEFAULT_TEST_URL = "http://mobile.xinhuashixun.com/Live/cncHD.m3u8";
+//    private static final String DEFAULT_TEST_URL = "http://live.hkstv.hk.lxdns.com/live/hks/playlist.m3u8";
+    private static final String DEFAULT_TEST_URL = "http://v4.music.126.net/20170913110343/e5ef586b3da50e9ad8b5aafb01d9af70/web/cloudmusic/MCQ4IjAxICAwICEhICAgIQ==/mv/294001/9147bc2c8e080cefcd454941fccc1a83.mp4";
     private boolean mIsActivityPaused = true;
     private MediaController mMediaController;
     private PLVideoTextureView mVideoView;
@@ -71,63 +70,33 @@ public class MainActivity extends AppCompatActivity {
     private int mRoomId = -1;
     private RoomFragment mRoomFragment = RoomFragment.newInstance();
     private boolean mInit = false;
+
     private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(PLMediaPlayer mp, int errorCode) {
-            boolean isNeedReconnect = false;
+            Log.e(TAG, "Error happened, errorCode = " + errorCode);
             switch (errorCode) {
-                case PLMediaPlayer.ERROR_CODE_INVALID_URI:
-                    showToastTips("Invalid URL !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_404_NOT_FOUND:
-                    showToastTips("404 resource not found !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_CONNECTION_REFUSED:
-                    showToastTips("Connection refused !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_CONNECTION_TIMEOUT:
-                    showToastTips("Connection timeout !");
-                    isNeedReconnect = true;
-                    break;
-                case PLMediaPlayer.ERROR_CODE_EMPTY_PLAYLIST:
-                    showToastTips("Empty playlist !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_STREAM_DISCONNECTED:
-                    showToastTips("Stream disconnected !");
-                    isNeedReconnect = true;
-                    break;
                 case PLMediaPlayer.ERROR_CODE_IO_ERROR:
-                    showToastTips("Network IO Error !");
-                    isNeedReconnect = true;
+                    /**
+                     * SDK will do reconnecting automatically
+                     */
+                    showToastTips("IO Error !");
+                    return false;
+                case PLMediaPlayer.ERROR_CODE_OPEN_FAILED:
+                    showToastTips("failed to open player !");
                     break;
-                case PLMediaPlayer.ERROR_CODE_UNAUTHORIZED:
-                    showToastTips("Unauthorized Error !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_PREPARE_TIMEOUT:
-                    showToastTips("Prepare timeout !");
-                    isNeedReconnect = true;
-                    break;
-                case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
-                    showToastTips("Read frame timeout !");
-                    isNeedReconnect = true;
-                    break;
-                case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
+                case PLMediaPlayer.ERROR_CODE_SEEK_FAILED:
+                    showToastTips("failed to seek !");
                     break;
                 default:
                     showToastTips("unknown error !");
                     break;
             }
-            // Todo pls handle the error status here, reconnect or call finish()
-            if (isNeedReconnect) {
-                sendReconnectMessage();
-            } else {
-                finish();
-            }
-            // Return true means the error has been handled
-            // If return false, then `onCompletion` will be called
+            finish();
             return true;
         }
     };
+
     private PLMediaPlayer.OnCompletionListener mOnCompletionListener = new PLMediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(PLMediaPlayer plMediaPlayer) {
@@ -193,17 +162,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void initAVOptions() {
         options = new AVOptions();
-        // the unit of timeout is ms
         options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
-        options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
-        // Some optimization with buffering mechanism when be set to 1
-        options.setInteger(AVOptions.KEY_LIVE_STREAMING, isLiveStreaming);
-        options.setInteger(AVOptions.KEY_DELAY_OPTIMIZATION, 1);
         // 1 -> hw codec enable, 0 -> disable [recommended]
-        int codec = 0;
-        options.setInteger(AVOptions.KEY_MEDIACODEC, codec);
-        // whether start play automatically after prepared, default value is 1
-        options.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
+        options.setInteger(AVOptions.KEY_MEDIACODEC, 0);
+        mVideoView.setAVOptions(options);
+        mVideoView.setDebugLoggingEnabled(true);
     }
 
     /**

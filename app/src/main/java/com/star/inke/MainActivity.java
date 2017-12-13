@@ -32,7 +32,12 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
     private static final int MESSAGE_ID_RECONNECTING = 0x01;
 //    private static final String DEFAULT_TEST_URL = "http://live.hkstv.hk.lxdns.com/live/hks/playlist.m3u8";
-    private static final String DEFAULT_TEST_URL = "http://v4.music.126.net/20170913110343/e5ef586b3da50e9ad8b5aafb01d9af70/web/cloudmusic/MCQ4IjAxICAwICEhICAgIQ==/mv/294001/9147bc2c8e080cefcd454941fccc1a83.mp4";
+    private static final String DEFAULT_TEST_URL1 = "http://v4.music.126.net/20170913110343/e5ef586b3da50e9ad8b5aafb01d9af70/web/cloudmusic/MCQ4IjAxICAwICEhICAgIQ==/mv/294001/9147bc2c8e080cefcd454941fccc1a83.mp4";
+    private static final String DEFAULT_TEST_URL2 = "http://v4.music.126.net/20171213114603/f0825aa013a32f34ef8a76f2dd1bc654/web/cloudmusic/MTE2MzI1OTA5/2f088e125207d7ce7d4d9bc8fff17807/67df6ddf01c342528b3f71b24bbd941b.mp4";
+    private static final String DEFAULT_TEST_URL3 = "http://v4.music.126.net/20171213115643/a2390961f208d8b1676b94fac452e349/web/cloudmusic/JDAyMDg1YTAhJCAkJDAhMA==/mv/5302271/65c3d8b779db505b16143384e0aa128d.mp4";
+    private static final String DEFAULT_TEST_URL4 = "http://v4.music.126.net/20171214113354/11a2eb0dbab84bcfe893eeb1a5d14a47/web/cloudmusic/JDAyMDg1YTAhJCAkJDAhMA==/mv/5302271/65c3d8b779db505b16143384e0aa128d.mp4";
+    private static final String DEFAULT_TEST_URL = DEFAULT_TEST_URL4;
+
     private boolean mIsActivityPaused = true;
     private MediaController mMediaController;
     private PLVideoTextureView mVideoView;
@@ -155,9 +160,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void generateUrls() {
-        for (int i = 0; i < 10; i++) {
-            mVideoUrls.add(DEFAULT_TEST_URL);
-        }
+        mVideoUrls.add(DEFAULT_TEST_URL1);
+        mVideoUrls.add(DEFAULT_TEST_URL2);
+        mVideoUrls.add(DEFAULT_TEST_URL3);
+        mVideoUrls.add(DEFAULT_TEST_URL1);
+        mVideoUrls.add(DEFAULT_TEST_URL2);
+        mVideoUrls.add(DEFAULT_TEST_URL3);
+//        for (int i = 0; i < 10; i++) {
+//            mVideoUrls.add(DEFAULT_TEST_URL);
+//        }
     }
 
     private void initAVOptions() {

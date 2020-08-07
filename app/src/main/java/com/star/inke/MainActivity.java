@@ -31,7 +31,15 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
     private static final int MESSAGE_ID_RECONNECTING = 0x01;
-    private static final String DEFAULT_TEST_URL = "http://live.hkstv.hk.lxdns.com/live/hks/playlist.m3u8";
+//    private static final String DEFAULT_TEST_URL = "http://live.hkstv.hk.lxdns.com/live/hks/playlist.m3u8";
+
+//    private static final String DEFAULT_TEST_URL1 = "https://www.w3schools.com/html/movie.mp4";
+//    private static final String DEFAULT_TEST_URL2 = "https://media.w3.org/2010/05/sintel/trailer.mp4";
+    private static final String DEFAULT_TEST_URL3 = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+    private static final String DEFAULT_TEST_URL4 = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+    private static final String DEFAULT_TEST_URL5 = "http://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8";
+    private static final String DEFAULT_TEST_URL = DEFAULT_TEST_URL4;
+
     //  private static final String DEFAULT_TEST_URL = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
 //  private static final String DEFAULT_TEST_URL = "http://mobile.xinhuashixun.com/Live/cncHD.m3u8";
     private boolean mIsActivityPaused = true;
@@ -186,9 +194,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void generateUrls() {
-        for (int i = 0; i < 10; i++) {
+
+//        for (int i = 0; i < 10; i++) {
             mVideoUrls.add(DEFAULT_TEST_URL);
-        }
+//        }
+        mVideoUrls.add(DEFAULT_TEST_URL3);
+        mVideoUrls.add(DEFAULT_TEST_URL4);
+        mVideoUrls.add(DEFAULT_TEST_URL5);
+        mVideoUrls.add(DEFAULT_TEST_URL3);
+        mVideoUrls.add(DEFAULT_TEST_URL4);
+        mVideoUrls.add(DEFAULT_TEST_URL5);
     }
 
     private void initAVOptions() {

@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String DEFAULT_TEST_URL = DEFAULT_TEST_URL4;
 
     //  private static final String DEFAULT_TEST_URL = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
-//  private static final String DEFAULT_TEST_URL = "http://mobile.xinhuashixun.com/Live/cncHD.m3u8";
+    //  private static final String DEFAULT_TEST_URL = "http://mobile.xinhuashixun.com/Live/cncHD.m3u8";
     private boolean mIsActivityPaused = true;
     private MediaController mMediaController;
     private PLVideoTextureView mVideoView;
@@ -237,12 +237,18 @@ public class MainActivity extends AppCompatActivity {
         mRoomId = currentItem;
     }
 
-    private void loadVideo(int position) {
+    private void loadVideo(final int position) {
         mVideoView.setMediaController(mMediaController);
         mVideoView.setOnCompletionListener(mOnCompletionListener);
         mVideoView.setOnErrorListener(mOnErrorListener);
-        mVideoView.setVideoPath(mVideoUrls.get(position));
-        mVideoView.start();
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mVideoView.setVideoPath(mVideoUrls.get(position));
+                mVideoView.start();
+            }
+        });
     }
 
     @Override
